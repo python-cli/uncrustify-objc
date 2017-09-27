@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
 import argparse
+import sys
 import os
 import os.path
 import plistlib
 import subprocess
+import glob
 # import pdb
 # pdb.set_trace()
 
@@ -26,22 +28,31 @@ def get_resursive_subdirectories(dir):
     return items
 
 def run_uncrustify(path):
+    matched_path = glob.glob(path)
+
+    if len(matched_path) <= 0:
+        return True
+
     output = None
 
     try:
         if showVerbose:
             print 'Formatting ' + path
-        with open(os.devnull, 'w') as devnull:
-            subprocess.check_output('uncrustify -c ' + cfg_config_file + ' -l oc --no-backup ' + path + ' > /dev/null', shell=True, stderr=devnull)
-    except subprocess.CalledProcessError, e:
-        print "uncrustify exception:\n", e
 
-    if showVerbose and output is not None:
-        # print output
-        pass
+        with open(os.devnull, 'w') as devnull:
+            subprocess.check_output('uncrustify -c ' + cfg_config_file + ' -l OC --no-backup ' + path + ('' if showVerbose else ' -q'), shell=True, stderr=devnull)
+    except subprocess.CalledProcessError, e:
+        if len(e.output) > 0:
+            print "uncrustify exception:\n:", e.returncode, e.output
+            return False
+        return True
+    else:
+        return True
 
 def formatcode(root_dir, plist_path):
+    result = True
     items = get_resursive_subdirectories(root_dir)
+    items.append(root_dir)
 
     try:
         plroot = plistlib.readPlist(plist_path)
@@ -55,8 +66,6 @@ def formatcode(root_dir, plist_path):
             for y in items[:]:
                 if y.find(x) >= 0:
                     items.remove(y)
-                    if showVerbose:
-                        print y + ' ignored!'
 
         for x in whitelist:
             if not x in items:
@@ -66,7 +75,7 @@ def formatcode(root_dir, plist_path):
 
     except:
         print "Read file paths from plist failed!"
-        return
+        return False
 
     for item in items:
         if os.path.exists(item):
@@ -76,13 +85,15 @@ def formatcode(root_dir, plist_path):
                 if path[-1] != '/':
                     path = path + '/'
 
-                run_uncrustify(path + '*.h')
-                run_uncrustify(path + '*.m')
+                result &= run_uncrustify(path + '*.h')
+                result &= run_uncrustify(path + '*.m')
                 #run_uncrustify(path + '*.mm') fnmatch
             else:
-                run_uncrustify(path)
+                result &= run_uncrustify(path)
         else:
             print '\'%s\' not found, skipped!' % item
+
+    return result
 
 
 def main():
@@ -123,22 +134,32 @@ def main():
 
     if not os.path.exists(root_dir):
         print root_dir + ' doesn\'t exist!'
-        return
+        return False
 
     if not os.path.exists(plist_config_file):
         print plist_config_file + ' does\'t exist!'
-        return
+        return False
 
     if not os.path.exists(cfg_config_file):
         print cfg_config_file + ' does\'t exist!'
-        return
+        return False
 
     if showVerbose:
         print 'Working on ' + root_dir + ' with config file ' + plist_config_file
 
-    formatcode(root_dir, plist_config_file)
+    if formatcode(root_dir, plist_config_file):
+        print '''|-------------------------------|
+|                               |
+|\x1b[5;32m \033[1m           Awesome!          \033[0m \x1b[0m|
+|                               |
+|-------------------------------|'''
+        return True
+    else:
+        print '\x1b[5;31m' + 'Oops! Something went wrong.' + '\x1b[0m'
+        return False
 
 
 if __name__ == "__main__":
-    main()
+    if not main():
+        sys.exit(1)
 
