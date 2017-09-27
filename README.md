@@ -41,6 +41,17 @@ optional arguments:
   -p PLIST_CONFIG_FILE  a plist config file used for path management.
 ```
 
+> ROOT_DIR: All the subdirectories including itself will be counted in.
+>
+> CFG_CONFIG_FILE: Point to uncrustify configuration file.
+>
+> PLIST_CONFIG_FILE: The plist file maintains the working directories for formatting. Ignore the 3rd party code file directories, add the files or directories under the blacklist directories to the whitelist node if needed, it depends on your project requirement.
+
+By default, the command `./uncrustify.py` assumes that the file `uncrustify.cfg` and `uncrustify_path.plist` under the *current working directory*.
+
+Highly recommend you to track this files in your version control. :)
+
+
 
 ## Author
 
