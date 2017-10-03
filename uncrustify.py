@@ -7,8 +7,6 @@ import os.path
 import plistlib
 import subprocess
 import glob
-# import pdb
-# pdb.set_trace()
 
 showVerbose = False
 cfg_config_file = 'uncrustify.cfg'
@@ -42,9 +40,10 @@ def run_uncrustify(path):
         with open(os.devnull, 'w') as devnull:
             subprocess.check_output('uncrustify -c ' + cfg_config_file + ' -l OC --no-backup ' + path + ('' if showVerbose else ' -q'), shell=True, stderr=devnull)
     except subprocess.CalledProcessError, e:
-        if len(e.output) > 0:
-            print "uncrustify exception:\n:", e.returncode, e.output
-            return False
+        if e.returncode == 1:
+            return True # Suppress the warning message from uncrustify. https://github.com/uncrustify/uncrustify/issues/857
+
+        print "exception:\n", e.cmd, '\ncode:', e.returncode, 'output:', e.output if len(e.output) > 0 else 'None'
         return True
     else:
         return True
@@ -87,7 +86,7 @@ def formatcode(root_dir, plist_path):
 
                 result &= run_uncrustify(path + '*.h')
                 result &= run_uncrustify(path + '*.m')
-                #run_uncrustify(path + '*.mm') fnmatch
+                result &= run_uncrustify(path + '*.mm')
             else:
                 result &= run_uncrustify(path)
         else:
