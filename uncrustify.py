@@ -7,6 +7,7 @@ import os.path
 import plistlib
 import subprocess
 import glob
+import click
 
 showVerbose = False
 cfg_config_file = 'uncrustify.cfg'
