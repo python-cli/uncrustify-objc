@@ -96,70 +96,66 @@ def formatcode(root_dir, plist_path):
     return result
 
 
-def main():
+@click.command()
+@click.argument('project_path', default='.', metavar='PROJECT_PATH',
+                            type=click.Path(exists=True, dir_okay=True, file_okay=False))
+@click.option('--cfg-file', '-c', type=click.Path(exists=True, dir_okay=False, file_okay=True),
+                            envvar='CFG_FILE', metavar='CFG_FILE',
+                            help='The CFG config file used to format.')
+@click.option('--path-file', '-p', type=click.Path(exists=True, dir_okay=False, file_okay=True),
+                            envvar='PATH_FILE', metavar='PATH_FILE',
+                            help='The path config file used to maintain the file lists.')
+@click.option('--git-only', '-g', is_flag=True, default=False,
+                            help='Format the current git staged and unstaged files only.')
+@click.option('--dry-run', '-n', is_flag=True, default=False,
+                            help='Do not format any files, but show a list of files to be formatted.')
+@click.option('--verbose', '-v', is_flag=True, default=False,
+                            help='Enables verbose mode.')
+def cli(project_path, cfg_file, path_file, git_only, dry_run, verbose):
+    """
+    uncrustify-obj is used to format the objective-c files under the specified project path.
+    
+    For the uncrustify.cfg config file, it will search it recrussivly from the project directory
+    to its top parent directory. If none, the ~/uncrustify.cfg or ~/.uncrustify/uncrustify.cfg
+    will be assumed to use.
+    """
+    
+    project_path = os.path.abspath(project_path)
 
-    parser = argparse.ArgumentParser(description='Format code with uncrustify for Objective-C project.')
-    parser.add_argument('-v', action='store_true', dest='showVerbose', default=False,
-                        help='output the verbose log')
+    def get_cfg_file(cfg_dir):
+        cfg_path = os.path.join(cfg_dir, cfg_config_file)
 
-    parser.add_argument('-d', action='store', dest='root_dir',
-                         help='a valid directory path points to source code project.')
+        if os.path.exists(cfg_path):
+            return cfg_path
 
-    parser.add_argument('-c', action='store', dest='cfg_config_file',
-                         help='a config file path point to uncrustify.cfg file for formatting.')
+        if cfg_dir == '/':
+            return None
 
-    parser.add_argument('-p', action='store', dest='plist_config_file',
-                         help='a plist config file used for path management.')
+        cfg_dir = os.path.dirname(cfg_dir)
 
-    args = parser.parse_args()
+        return get_cfg_file(cfg_dir)
 
-    global showVerbose
+    global cfg_config_file
+    
+    if cfg_file is None:
+        cfg_file = get_cfg_file(project_path)
+        
+        if cfg_file is None:
+            cfg_file = os.path.join(os.path.expanduser('~'), cfg_config_file)
+            
+            if not os.path.exists(cfg_file):
+                cfg_file = os.path.join(os.path.expanduser('~/.uncrustify'), cfg_config_file)
 
-    showVerbose = args.showVerbose
-    root_dir = args.root_dir
-    plist_config_file = args.plist_config_file
+                if not os.path.exists(cfg_file):
+                    raise click.ClickException('Not found the %s file!' % cfg_config_file)
 
-    if root_dir is None or len(root_dir) < 1:
-        root_dir = '.'
-
-    if plist_config_file is None or len(plist_config_file) < 1:
-        plist_config_file = 'uncrustify_path.plist'
-
-    if args.cfg_config_file is not None and len(args.cfg_config_file) > 1:
-        global cfg_config_file
-        cfg_config_file = args.cfg_config_file
-
-    root_dir = os.path.abspath(root_dir)
-    plist_config_file = os.path.abspath(plist_config_file)
-
-    if not os.path.exists(root_dir):
-        print root_dir + ' doesn\'t exist!'
-        return False
-
-    if not os.path.exists(plist_config_file):
-        print plist_config_file + ' does\'t exist!'
-        return False
-
-    if not os.path.exists(cfg_config_file):
-        print cfg_config_file + ' does\'t exist!'
-        return False
-
-    if showVerbose:
-        print 'Working on ' + root_dir + ' with config file ' + plist_config_file
-
-    if formatcode(root_dir, plist_config_file):
-        print '''|-------------------------------|
-|                               |
-|\x1b[5;32m \033[1m           Awesome!          \033[0m \x1b[0m|
-|                               |
-|-------------------------------|'''
-        return True
+        cfg_config_file = cfg_file
     else:
-        print '\x1b[5;31m' + 'Oops! Something went wrong.' + '\x1b[0m'
-        return False
+        cfg_config_file = os.path.abspath(cfg_file)
 
-
-if __name__ == "__main__":
-    if not main():
-        sys.exit(1)
-
+    click.echo(project_path)
+    click.echo(cfg_config_file)
+    click.echo(path_file)
+    click.echo(verbose)
+    
+    
