@@ -1,0 +1,22 @@
+
+uncrustify-objc --help
+
+Usage: uncrustify-objc [OPTIONS] PROJECT_PATH
+
+  uncrustify-obj is used to format the objective-c files under the specified
+  project path.
+
+  For the uncrustify.cfg config file, it will search it recrussivly from the
+  project directory to its top parent directory. If none, the
+  ~/uncrustify.cfg or ~/.uncrustify/uncrustify.cfg will be assumed to use.
+
+Options:
+  -c, --cfg-file CFG_FILE        The CFG config file used to format.
+  -p, --ignore-file IGNORE_FILE  The ignore file used to ignore the matching
+                                 files for formatting.
+  -g, --git-only                 Format the current git staged and unstaged
+                                 files only.
+  -n, --dry-run                  Do not format any files, but show a list of
+                                 files to be formatted.
+  -v, --verbose                  Enables verbose mode.
+  --help                         Show this message and exit.

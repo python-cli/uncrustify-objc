@@ -1,0 +1,2 @@
+include uncrustify.cfg
+include uncrustify_ignore_global
