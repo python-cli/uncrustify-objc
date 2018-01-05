@@ -127,6 +127,9 @@ def formatcode(root_dir):
 
         target_files = filter(check_in_blacklist, allfiles)
 
+    if len(target_files) <= 0:
+        return False
+
     if showVerbose:
         click.echo("Formatting on %d items..." % len(target_files))
 
