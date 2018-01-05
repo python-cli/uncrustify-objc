@@ -150,7 +150,7 @@ def formatcode(root_dir):
 @click.option('--cfg-file', '-c', type=click.Path(exists=True, dir_okay=False, file_okay=True),
                             envvar='CFG_FILE', metavar='CFG_FILE',
                             help='The CFG config file used to format.')
-@click.option('--ignore-file', '-p', type=click.Path(exists=True, dir_okay=False, file_okay=True),
+@click.option('--ignore-file', '-i', type=click.Path(exists=True, dir_okay=False, file_okay=True),
               envvar='IGNORE_FILE', metavar='IGNORE_FILE',
               help='The ignore file used to ignore the matching files for formatting.')
 @click.option('--git-only', '-g', is_flag=True, default=False,

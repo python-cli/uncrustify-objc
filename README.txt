@@ -30,7 +30,7 @@ Usage: uncrustify-objc [OPTIONS] PROJECT_PATH
 
 Options:
   -c, --cfg-file CFG_FILE        The CFG config file used to format.
-  -p, --ignore-file IGNORE_FILE  The ignore file used to ignore the matching
+  -i, --ignore-file IGNORE_FILE  The ignore file used to ignore the matching
                                  files for formatting.
   -g, --git-only                 Format the current git staged and unstaged
                                  files only.
