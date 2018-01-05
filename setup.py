@@ -26,17 +26,18 @@ if not os.path.exists(ignore_file_path):
 
 
 def readme():
-    with open('README') as f:
+    with open('README.txt') as f:
         return f.read()
 
 setup(
     name='uncrustify-objc',
-    version='1.0',
+    version='1.1',
     author='Will Han',
     author_email='xingheng.hax@qq.com',
     license='MIT',
     keywords='uncrustify objective-c objc code beauty format',
     url='https://github.com/xingheng/uncrustify-objc',
+    description='Use uncrustify to format the objective-c files under the specified project path',
     long_description=readme(),
     py_modules=['uncrustify_objc'],
     include_package_data=True,
