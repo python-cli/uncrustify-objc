@@ -31,7 +31,7 @@ def readme():
 
 setup(
     name='uncrustify-objc',
-    version='1.1',
+    version='1.2',
     author='Will Han',
     author_email='xingheng.hax@qq.com',
     license='MIT',

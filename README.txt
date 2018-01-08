@@ -12,8 +12,8 @@ Usage: uncrustify-objc [OPTIONS] PROJECT_PATH
 
   Configure the uncrustify_ignore in the project path to make a path
   blacklist which matched items will not be formatted. It uses the gitignore
-  file template, more documentation could be found from https://git-
-  scm.com/docs/gitignore.
+  file template, more documentation could be found from 
+  https://git-scm.com/docs/gitignore.
 
   By default, it will search the ignore file from the project path, if not
   specify with --ignore-file. Besides, there is a global ignore file located
