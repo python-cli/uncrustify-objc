@@ -1,8 +1,12 @@
 # uncrustify-objc
 
-> This script tool is used for formatting code for Objective-C language project. Since the [BBUncrustifyPlugin-Xcode](https://github.com/benoitsan/BBUncrustifyPlugin-Xcode/issues/137) plugin doesn't work in Xcode 9 anymore. It seems there are not any Xcode plugin based on [*Source Editor Extension*](https://developer.apple.com/documentation/xcodekit/creating_a_source_editor_extension) like [ClangFormat-Xcode](https://github.com/travisjeffery/ClangFormat-Xcode), what a pity!
+This script tool is used for formatting code for Objective-C language project. Since the [BBUncrustifyPlugin-Xcode](https://github.com/benoitsan/BBUncrustifyPlugin-Xcode/issues/137) plugin doesn't work in Xcode 9 anymore. It seems there are not any Xcode plugin based on [*Source Editor Extension*](https://developer.apple.com/documentation/xcodekit/creating_a_source_editor_extension) like [ClangFormat-Xcode](https://github.com/travisjeffery/ClangFormat-Xcode), what a pity!
+
+
+
+> [uncrustify](https://github.com/uncrustify/uncrustify) and [uncrustify-objc](https://github.com/xingheng/uncrustify-objc) are different, the former is built with c++ and designed for kinds of languages, the latter is a cli wrapper tool built with python but not including uncrustify script, it need the users to [install the former](https://github.com/uncrustify/uncrustify#build) into your local environment paths.
 >
-> See more in [pypi page](https://pypi.python.org/pypi/uncrustify-objc).
+> Get it with `pip`, see more in [pypi page](https://pypi.python.org/pypi/uncrustify-objc).
 
 
 
@@ -28,9 +32,10 @@
 ## Installation
 
 ```shell
-pip install uncrustify-objc
+pip install uncrustify-objc -U
 ```
 
+After finishing the installation, a default uncrustify.cfg file like [this](http://uncrustify.sourceforge.net/default.cfg) and a initial global path ignore file named `uncrustify_ignore_global`  could be located in `~/.uncrustify/`. If you used the [BBUncrustifyPlugin-Xcode](https://github.com/benoitsan/BBUncrustifyPlugin-Xcode) or old version of this tool, they won't be overwrite when [re]installing.
 
 ## Usage
 
