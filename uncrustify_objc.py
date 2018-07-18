@@ -62,7 +62,7 @@ def get_changed_files(root_dir):
             click.secho('git is missing in the envionment paths!', fg='red')
             return []
 
-        cmd = 'cd ' + root_dir + ' ; ' + executable + ' status --short'
+        cmd = executable + ' -C "' + os.path.abspath(root_dir) + '" status --short'
         p = subprocess.Popen(['/bin/sh', '-c', cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         ret_code = p.wait()
 
@@ -70,8 +70,24 @@ def get_changed_files(root_dir):
             str_output = p.stdout.read()
 
             if str_output:
-                file_list = [ x[3:] for x in str_output.splitlines()]
-                file_list = map((lambda x: os.path.abspath(os.path.join(root_dir, x))), file_list)
+                # https://git-scm.com/docs/git-status
+                file_list = []
+
+                for line in str_output.splitlines():
+                    # Get the relative file path
+                    path = line[3:]
+                    # Use the the new file path if rename/copy mode exist
+                    idx = path.find('->')
+                    if idx != -1:
+                        path = path[idx + 2:]
+                    # Strip the quoted string literal if whitespace or other nonprintable characters exist
+                    path = path.strip(' "\'')
+                    # Convert to the full file path
+                    path = os.path.abspath(os.path.join(root_dir, path))
+
+                    assert os.path.exists(path)
+                    file_list.append(path)
+
                 return file_list
 
         elif ret_code > 0:
@@ -172,11 +188,11 @@ def cli(project_path, cfg_file, ignore_file, git_only, dry_run, verbose):
     be found from https://git-scm.com/docs/gitignore.
 
     By default, it will search the ignore file from the project path, if not specify with
-    --ignore-file. Besides, there is a global ignore file located 
+    --ignore-file. Besides, there is a global ignore file located
     ~/.uncrustify/uncrustify_ignore_global which will be combined to the target ignore spec.
 
     If the project path is under the git version control, passing the --git-only option will
-    make the changed source files to be used as source file list, the ignore files will be 
+    make the changed source files to be used as source file list, the ignore files will be
     omitted because the git-scm already used the gitignore spec.
 
     Highly recommend you to make a shell alias like
@@ -236,7 +252,7 @@ def cli(project_path, cfg_file, ignore_file, git_only, dry_run, verbose):
     git_changed_only = git_only
 
     if showVerbose:
-        click.echo('Working on project: %s\nCFG file: %s\nIgnore spec: %s\n' % 
+        click.echo('Working on project: %s\nCFG file: %s\nIgnore spec: %s\n' %
             (project_path, cfg_config_file, current_ignore_file))
 
     if formatcode(project_path):
