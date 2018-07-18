@@ -6,7 +6,7 @@ This script tool is used for formatting code for Objective-C language project. S
 
 > [uncrustify](https://github.com/uncrustify/uncrustify) and [uncrustify-objc](https://github.com/xingheng/uncrustify-objc) are different, the former is built with c++ and designed for kinds of languages, the latter is a cli wrapper tool built with python but not including uncrustify script, it need the users to [install the former](https://github.com/uncrustify/uncrustify#build) into your local environment paths.
 >
-> Get it with `pip`, see more in [pypi page](https://pypi.python.org/pypi/uncrustify-objc).
+> Get it with `pip`, see more in [pypi page](https://pypi.org/project/uncrustify-objc/).
 
 
 
