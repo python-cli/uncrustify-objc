@@ -117,9 +117,9 @@ def formatcode(root_dir):
 
     if git_changed_only:
         allfiles = get_changed_files(root_dir)
-        target_files = filter((lambda x: os.path.splitext(x)[1] in ['.h', '.m', '.mm']), allfiles)
+        target_files = filter((lambda x: os.path.splitext(x)[1] in ['.h', '.m']), allfiles)
     else:
-        all_spec = pathspec.PathSpec.from_lines('gitwildmatch', ['*.h', '*.m', '*.mm'])
+        all_spec = pathspec.PathSpec.from_lines('gitwildmatch', ['*.h', '*.m'])
         allfiles = list(all_spec.match_tree(root_dir))
         allfiles = map((lambda x: os.path.join(root_dir, x)), allfiles)
 
