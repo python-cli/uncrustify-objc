@@ -66,7 +66,7 @@ def get_changed_files(root_dir):
             click.secho('git is missing in the envionment paths!', fg='red')
             return []
 
-        cmd = executable + ' -C "' + os.path.abspath(root_dir) + '" status --short'
+        cmd = executable + ' -C "' + os.path.abspath(root_dir) + '" status --porcelain=v1'
         p = subprocess.Popen(['/bin/sh', '-c', cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         ret_code = p.wait()
 
@@ -89,8 +89,10 @@ def get_changed_files(root_dir):
                     # Convert to the full file path
                     path = os.path.abspath(os.path.join(root_dir, path))
 
-                    assert os.path.exists(path)
-                    file_list.append(path)
+                    if os.path.exists(path):
+                        file_list.append(path)
+                    else:
+                        click.echo(click.style('\nFound invalid path: %s, skipping it!' % path, fg='red'))
 
                 return file_list
 
