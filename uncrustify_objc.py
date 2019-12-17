@@ -16,6 +16,8 @@ current_ignore_file = 'uncrustify_ignore'
 
 
 def run_uncrustify(path):
+    '''run the uncrustify shell tool with specified path.'''
+
     try:
         executable = distutils.spawn.find_executable('uncrustify')
 
@@ -55,6 +57,8 @@ def run_uncrustify(path):
 
 
 def get_changed_files(root_dir):
+    '''Get the staged/unstaged files from current git repsitory.'''
+
     try:
         executable = distutils.spawn.find_executable('git')
 
@@ -76,7 +80,7 @@ def get_changed_files(root_dir):
                 for line in str_output.splitlines():
                     # Get the relative file path
                     path = line[3:]
-                    # Use the the new file path if rename/copy mode exist
+                    # Use the the new file path if rename/copy mode exists
                     idx = path.find('->')
                     if idx != -1:
                         path = path[idx + 2:]
@@ -105,6 +109,8 @@ def get_changed_files(root_dir):
 
 
 def formatcode(root_dir):
+    '''Core entry for formatting.'''
+
     target_files = None
 
     if git_changed_only:
@@ -153,7 +159,7 @@ def formatcode(root_dir):
         cur_dir = os.getcwd()
 
         for item in target_files:
-            click.echo("Formatting on %s" % os.path.relpath(item, cur_dir))
+            click.echo("Pretend to format on %s" % os.path.relpath(item, cur_dir))
         return True
 
     concate_files = reduce((lambda x, y: x + ' ' + y), target_files)
@@ -257,3 +263,5 @@ def cli(project_path, cfg_file, ignore_file, git_only, dry_run, verbose):
 
     if formatcode(project_path):
         click.echo('\x1b[5;32m\033[1mAwesome!\033[0m\x1b[0m')
+    else:
+        click.echo('Hmmm... Maybe next time!')
