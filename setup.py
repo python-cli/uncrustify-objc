@@ -14,7 +14,7 @@ cfg_file_path = os.path.join(default_root_path, cfg_file_name)
 
 if not os.path.exists(cfg_file_path):
     shutil.copyfile(os.path.join(here, cfg_file_name), cfg_file_path)
-    print("Created %s" % cfg_file_path)
+    print("Created %s" % (cfg_file_path))
 
 
 ignore_file_name = 'uncrustify_ignore_global'
@@ -22,7 +22,7 @@ ignore_file_path = os.path.join(default_root_path, ignore_file_name)
 
 if not os.path.exists(ignore_file_path):
     shutil.copyfile(os.path.join(here, ignore_file_name), ignore_file_path)
-    print("Created %s" % ignore_file_path)
+    print("Created %s" % (ignore_file_path))
 
 
 def readme():

@@ -6,7 +6,8 @@ import os.path
 import subprocess
 import click
 import pathspec
-import distutils.spawn
+import shutil
+from functools import reduce
 
 showVerbose = False
 dry_run_option = False
@@ -19,7 +20,7 @@ def run_uncrustify(path):
     '''run the uncrustify shell tool with specified path.'''
 
     try:
-        executable = distutils.spawn.find_executable('uncrustify')
+        executable = shutil.which('uncrustify')
 
         if executable is None:
             click.secho('uncrustify is required!\n\n'
@@ -35,7 +36,7 @@ def run_uncrustify(path):
         if showVerbose:
             str_output = p.stdout.read()
             if len(str_output) > 0:
-                click.echo(click.style('\Output:\n%s' % str_output, fg='green'))
+                click.echo(click.style('\nOutput:\n%s' % str_output, fg='green'))
 
         if ret_code == 0:
             pass  # Succeed!
@@ -49,7 +50,7 @@ def run_uncrustify(path):
         else:
             pass # siglal, suppressed by click
 
-    except Exception, e:
+    except Exception as e:
         click.echo(click.style('\nException:\n%s' % e, fg='red'))
         return False
     else:
@@ -60,7 +61,7 @@ def get_changed_files(root_dir):
     '''Get the staged/unstaged files from current git repsitory.'''
 
     try:
-        executable = distutils.spawn.find_executable('git')
+        executable = shutil.which('git')
 
         if executable is None:
             click.secho('git is missing in the envionment paths!', fg='red')
@@ -104,7 +105,7 @@ def get_changed_files(root_dir):
         else:
             pass # siglal, suppressed by click
 
-    except Exception, e:
+    except Exception as e:
         click.echo(click.style('\nException:\n%s' % e, fg='red'))
 
     return []
@@ -117,11 +118,11 @@ def formatcode(root_dir):
 
     if git_changed_only:
         allfiles = get_changed_files(root_dir)
-        target_files = filter((lambda x: os.path.splitext(x)[1] in ['.h', '.m']), allfiles)
+        target_files = list(filter((lambda x: os.path.splitext(x)[1] in ['.h', '.m']), allfiles))
     else:
         all_spec = pathspec.PathSpec.from_lines('gitwildmatch', ['*.h', '*.m'])
         allfiles = list(all_spec.match_tree(root_dir))
-        allfiles = map((lambda x: os.path.join(root_dir, x)), allfiles)
+        allfiles = list(map((lambda x: os.path.join(root_dir, x)), allfiles))
 
         if showVerbose:
             click.echo("Found total items: %d" % len(allfiles))
@@ -149,7 +150,7 @@ def formatcode(root_dir):
                     return False
             return True
 
-        target_files = filter(check_in_blacklist, allfiles)
+        target_files = list(filter(check_in_blacklist, allfiles))
 
     if len(target_files) <= 0:
         return False
