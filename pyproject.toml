@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "uncrustify-objc"
-version = "1.5"
+version = "1.6"
 authors = [
     {name = "Will Han", email = "xingheng.hax@qq.com"},
 ]
