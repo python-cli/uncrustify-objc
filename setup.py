@@ -31,12 +31,12 @@ def readme():
 
 setup(
     name='uncrustify-objc',
-    version='1.4',
+    version='1.5',
     author='Will Han',
     author_email='xingheng.hax@qq.com',
     license='MIT',
     keywords='uncrustify objective-c objc code beauty format',
-    url='https://github.com/xingheng/uncrustify-objc',
+    url='https://github.com/python-cli/uncrustify-objc',
     description='Use uncrustify to format the objective-c files under the specified project path',
     long_description=readme(),
     py_modules=['uncrustify_objc'],
@@ -53,8 +53,6 @@ setup(
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Objective C',
         'Programming Language :: Unix Shell',
