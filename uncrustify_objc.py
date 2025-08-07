@@ -169,6 +169,25 @@ def formatcode(root_dir):
     return run_uncrustify(concate_files)
 
 
+def setup_default_configs():
+    default_root_path = os.path.expanduser('~/.uncrustify')
+    if not os.path.exists(default_root_path):
+        os.mkdir(default_root_path)
+
+    here = os.path.abspath(os.path.dirname(__file__))
+    cfg_file_name = 'uncrustify.cfg'
+    cfg_file_path = os.path.join(default_root_path, cfg_file_name)
+    if not os.path.exists(cfg_file_path):
+        shutil.copyfile(os.path.join(here, cfg_file_name), cfg_file_path)
+        click.echo("Created %s" % (cfg_file_path))
+
+    ignore_file_name = 'uncrustify_ignore_global'
+    ignore_file_path = os.path.join(default_root_path, ignore_file_name)
+    if not os.path.exists(ignore_file_path):
+        shutil.copyfile(os.path.join(here, ignore_file_name), ignore_file_path)
+        click.echo("Created %s" % (ignore_file_path))
+
+
 @click.command()
 @click.argument('project_path', default='.', metavar='PROJECT_PATH',
                 type=click.Path(exists=True, dir_okay=True, file_okay=False))
@@ -208,6 +227,7 @@ def cli(project_path, cfg_file, ignore_file, git_only, dry_run, verbose):
     `alias uncrustify-objc='uncrustify-objc --git-only'`.
     """
 
+    setup_default_configs()
     project_path = os.path.abspath(project_path)
 
     def get_cfg_file(cfg_dir):
